@@ -179,7 +179,6 @@ LOGGING = {
             "level": "INFO",
             "propagate": True,
         },
-        # Логгер для твоего приложения
         "orders": {
             "handlers": ["console", "file"],
             "level": "INFO",

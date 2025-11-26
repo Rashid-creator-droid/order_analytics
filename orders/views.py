@@ -63,8 +63,6 @@ class UploadOrdersView(APIView):
             OrderItem.objects.bulk_create(items_to_create)
         if items_to_update:
             OrderItem.objects.bulk_update(items_to_update, ['name', 'quantity', 'price'])
-        for q in connection.queries:
-            print(q['sql'])
 
         return Response({"detail": "Orders uploaded successfully"}, status=status.HTTP_200_OK)
 
