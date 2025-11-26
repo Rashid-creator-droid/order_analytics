@@ -33,6 +33,7 @@ POSTGRES_PASSWORD=postgres
 DB_HOST=db
 DB_PORT=5432
 ``` 
+DB_HOST=localhost для запуска в ручном режиме.
 ## Установка проекта из репозитория  GitHub.
 ### Установить Python 3.10
 - Для Windows https://www.python.org/downloads/

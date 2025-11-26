@@ -13,6 +13,7 @@ services:
 
   web:
     build: .
+    container_name: order_analytics_web_1
     command: |
       sh -c "python manage.py migrate \
         && python manage.py migrate django_celery_beat \
