@@ -3,6 +3,7 @@ from django.utils.timezone import now
 
 
 class User(models.Model):
+    """User model"""
     username = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
@@ -10,6 +11,7 @@ class User(models.Model):
 
 
 class Order(models.Model):
+    """Order model"""
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('delivered', 'Delivered'),
@@ -27,6 +29,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
+    """Order Item model"""
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     sku = models.CharField(max_length=50)
     name = models.CharField(max_length=255)
@@ -40,6 +43,7 @@ class OrderItem(models.Model):
         return self.name
 
 class DailyStats(models.Model):
+    """Daily Stats model"""
     user = models.ForeignKey('orders.User', on_delete=models.CASCADE)
     date = models.DateField(default=now)
     orders_count = models.IntegerField()

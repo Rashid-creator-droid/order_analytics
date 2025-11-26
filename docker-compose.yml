@@ -15,9 +15,6 @@ services:
     build: .
     container_name: order_analytics_web_1
     command: bash -c "python manage.py migrate && python manage.py migrate django_celery_beat && python manage.py migrate django_celery_results && python manage.py runserver 0.0.0.0:8000"
-
-    environment:
-      DJANGO_SUPERUSER_PASSWORD: admin
     volumes:
       - .:/app
     ports:
