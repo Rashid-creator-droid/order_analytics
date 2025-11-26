@@ -37,17 +37,13 @@ INTERNAL_IPS = [
 # Celery setting
 
 CELERY_BROKER_URL = 'redis://redis:6379/0'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
-CELERY_BEAT_SCHEDULE = {
-    'daily-order-stats': {
-        'task': 'orders.tasks.daily_order_stats',
-        'schedule': crontab(minute='*/1'),
-    },
-}
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
 
 # Application definition
 
@@ -62,6 +58,7 @@ INSTALLED_APPS = [
     'orders',
     'debug_toolbar',
     'django_celery_beat',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [

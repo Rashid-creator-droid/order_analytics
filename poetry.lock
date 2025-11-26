@@ -256,6 +256,22 @@ python-crontab = ">=2.3.4"
 tzdata = "*"
 
 [[package]]
+name = "django-celery-results"
+version = "2.6.0"
+description = "Celery result backends for Django."
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "django_celery_results-2.6.0-py3-none-any.whl", hash = "sha256:b9ccdca2695b98c7cbbb8dea742311ba9a92773d71d7b4944a676e69a7df1c73"},
+    {file = "django_celery_results-2.6.0.tar.gz", hash = "sha256:9abcd836ae6b61063779244d8887a88fe80bbfaba143df36d3cb07034671277c"},
+]
+
+[package.dependencies]
+celery = ">=5.2.7,<6.0"
+Django = ">=3.2.25"
+
+[[package]]
 name = "django-debug-toolbar"
 version = "6.1.0"
 description = "A configurable set of panels that display various debug information about the current request/response."
@@ -578,4 +594,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.10"
-content-hash = "ec1b6baeee9b6d57a45a6e775dc1f166cbd484f77b56cd7d305526f5004d4a73"
+content-hash = "2c2b93d3ce868a4dfd8cff21c24c2c36d8cd028a67f5d72e4b90a1108cb93a23"

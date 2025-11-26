@@ -4,8 +4,8 @@ from orders.models import DailyStats, User, Order
 from django.utils.timezone import now
 
 
-@shared_task
-def daily_order_stats():
+@shared_task(bind=True)
+def daily_order_stats(self):
     today = now().date()
     users = User.objects.all()
 
@@ -15,12 +15,11 @@ def daily_order_stats():
         total_revenue = orders.aggregate(total=Sum('total_amount'))['total'] or 0
         avg_order_value = total_revenue / orders_count if orders_count else 0
 
-        DailyStats.objects.update_or_create(
+        DailyStats.objects.create(
             user=user,
             date=today,
-            defaults={
-                'orders_count': orders_count,
-                'total_revenue': total_revenue,
-                'avg_order_value': avg_order_value
-            }
+            orders_count=orders_count,
+            total_revenue=total_revenue,
+            avg_order_value=avg_order_value
         )
+    return f'{len(users)} users processed, date={today}'
