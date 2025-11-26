@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class UploadOrdersView(APIView):
-
+    """Adds or updates order details"""
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         serializer = UploadOrdersSerializer(data=request.data)
@@ -27,12 +27,31 @@ class UploadOrdersView(APIView):
         items_to_create = []
         items_to_update = []
 
-        existing_orders = {o.order_number: o for o in Order.objects.filter(order_number__in=[o['order_number'] for o in orders_data])}
+        existing_orders = {
+            o.order_number: o
+            for o in Order.objects.filter(order_number__in=[o['order_number'] for o in orders_data])
+        }
 
         for order_data in orders_data:
             order_number = order_data['order_number']
-            order_instance = existing_orders[order_number]
-            logger.info(f'Processing order {order_number}')
+            if order_number in existing_orders:
+                order_instance = existing_orders[order_number]
+                logger.info(f'Processing existing order {order_number}')
+                order_instance.created_at = order_data['created_at']
+                order_instance.total_amount = order_data['total_amount']
+                order_instance.status = order_data['status']
+                order_instance.save(update_fields=['created_at', 'total_amount', 'status'])
+            else:
+                order_instance = Order.objects.create(
+                    user=user,
+                    order_number=order_number,
+                    created_at=order_data['created_at'],
+                    total_amount=order_data['total_amount'],
+                    status=order_data['status']
+                )
+                existing_orders[order_number] = order_instance
+                logger.info(f'Created new order {order_number}')
+
             items_data = order_data.get('items', [])
 
             existing_items_qs = OrderItem.objects.filter(order=order_instance)
@@ -73,15 +92,15 @@ class UploadOrdersView(APIView):
             logger.info(f'Bulk updating {len(items_to_update)} items')
             OrderItem.objects.bulk_update(items_to_update, ['name', 'quantity', 'price'])
 
-        return Response({"detail": "Orders uploaded successfully"}, status=status.HTTP_200_OK)
+        return Response({'detail': 'Orders uploaded successfully'}, status=status.HTTP_200_OK)
 
 
 class UserStatsView(APIView):
-
+    """Displays user statistics"""
     def get(self, request):
         username = request.query_params.get('user')
         if not username:
-            return Response({"error": "User query param is required"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'User query param is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         user_obj = get_object_or_404(User, username=username)
 
@@ -91,8 +110,8 @@ class UserStatsView(APIView):
         avg_order_value = total_revenue / orders_count if orders_count else 0
 
         return Response({
-            "user": username,
-            "orders_count": orders_count,
-            "total_revenue": float(total_revenue),
-            "avg_order_value": float(avg_order_value)
+            'user': username,
+            'orders_count': orders_count,
+            'total_revenue': float(total_revenue),
+            'avg_order_value': float(avg_order_value)
         })
